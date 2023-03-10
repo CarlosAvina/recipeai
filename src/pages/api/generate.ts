@@ -1,58 +1,29 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-
-type Usage = {
-  prompt_tokens: number;
-  completion_tokens: number;
-  total_tokens: number;
-};
-
-type Choice = {
-  text: string;
-  index: number;
-  logprobs: null;
-  finish_reason: string;
-};
-
-type Data = {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  choices: Array<Choice>;
-  usage: Usage;
-};
+import { ChatGPTMessage, getOpenAIStream } from "@/utils/stream";
 
 if (!process.env.OPEN_AI_KEY) {
   throw new Error("Missing env var from OpenAI");
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
-  const { prompt } = req.body;
+export const config = {
+  runtime: "edge",
+};
+
+export default async function handler(req: Request) {
+  const { prompt }: { prompt: string } = await req.json();
 
   if (!prompt) {
-    return new Response("No promnt in the request", { status: 400 });
+    return new Response("No prompt in the request", { status: 400 });
   }
 
-  const body = JSON.stringify({
+  const payload = {
     model: "text-davinci-003",
     prompt,
     temperature: 0.4,
     max_tokens: 500,
-  });
+    stream: true,
+    n: 1,
+  };
 
-  const response = await fetch(" https://api.openai.com/v1/completions", {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPEN_AI_KEY ?? ""}`,
-    },
-    method: "POST",
-    body,
-  });
-
-  const json: Data = await response.json();
-
-  res.status(200).json(json);
+  const stream = await getOpenAIStream(payload);
+  return new Response(stream);
 }

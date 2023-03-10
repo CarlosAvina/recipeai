@@ -2,35 +2,13 @@ import React, { SyntheticEvent } from "react";
 import Head from "next/head";
 import Link from "next/link";
 
-type Usage = {
-  prompt_tokens: number;
-  completion_tokens: number;
-  total_tokens: number;
-};
-
-type Choice = {
-  text: string;
-  index: number;
-  logprobs: null;
-  finish_reason: string;
-};
-
-type Response = {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  choices: Array<Choice>;
-  usage: Usage;
-};
-
 function splitIngredients(ingredients: string) {
   if (!ingredients) return [];
   return ingredients.trim().replace(" ", "").split(",");
 }
 
 export default function Home() {
-  const [recipes, setRecipes] = React.useState<Array<Choice>>([]);
+  const [recipe, setRecipe] = React.useState<string>("");
   const [ingredients, setIngredients] = React.useState<Array<string>>([]);
   const [loading, setLoading] = React.useState(false);
 
@@ -67,8 +45,29 @@ export default function Home() {
       method: "POST",
       body: JSON.stringify({ prompt }),
     });
-    const json: Response = await response.json();
-    setRecipes(json.choices);
+
+    if (!response.ok) {
+      setLoading(false);
+      throw new Error(response.statusText);
+    }
+
+    const data = response.body;
+    if (!data) {
+      setLoading(false);
+      return;
+    }
+
+    const reader = data.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      const chunkValue = decoder.decode(value);
+      setRecipe((prev) => (prev += chunkValue));
+    }
+
     setLoading(false);
   }
 
@@ -103,6 +102,7 @@ export default function Home() {
           className="flex flex-col gap-4"
           onSubmit={(e) => {
             setLoading(true);
+            setRecipe("");
             generateRecipe(e);
           }}
         >
@@ -160,18 +160,17 @@ export default function Home() {
             {loading ? "Cooking..." : "Generate recipe"}
           </button>
         </form>
-        {!loading
-          ? recipes.map((item) => (
-              <div
-                className="font-semibold rounded-md border-1 border-black my-4 bg-slate-100 p-4"
-                key={item.index}
-              >
-                {item.text.split("\n").map((str) => (
-                  <p key={str}>{str}</p>
-                ))}
-              </div>
-            ))
-          : null}
+
+        {recipe ? (
+          <div className="font-semibold rounded-md border-1 border-black my-4 bg-slate-100 p-4">
+            {recipe
+              .split("\n")
+              .filter(Boolean)
+              .map((str) => (
+                <p key={str}>{str}</p>
+              ))}
+          </div>
+        ) : null}
       </main>
       <footer className="flex flex-col col-start-2 col-end-8">
         <hr />
