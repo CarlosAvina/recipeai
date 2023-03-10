@@ -92,12 +92,12 @@ export default function Home() {
         />
       </Head>
       <nav className="flex flex-col gap-6 col-start-2 col-end-8 p-3">
-        <h1 className="text-4xl font-extrabold cursor-pointer">
+        <h1 className="text-2xl md:text-4xl font-extrabold cursor-pointer pt-4 text-center md:text-left whitespace-nowrap">
           🍽️ FoodRecipes.AI
         </h1>
         <hr />
       </nav>
-      <main className="col-start-3 col-end-7">
+      <main className="col-start-2 col-end-8 md:col-start-3 md:col-end-7">
         <form
           className="flex flex-col gap-4"
           onSubmit={(e) => {
@@ -174,7 +174,7 @@ export default function Home() {
       </main>
       <footer className="flex flex-col col-start-2 col-end-8">
         <hr />
-        <div className="flex justify-between">
+        <div className="flex flex-col md:flex-row justify-between text-center md:text-left">
           <div className="p-6">
             Powered by{" "}
             <Link
