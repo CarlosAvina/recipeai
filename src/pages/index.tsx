@@ -81,7 +81,7 @@ export default function Home() {
   return (
     <div className="grid grid-cols-8 grid-rows-[min-content_1fr_min-content] gap-4 h-screen">
       <Head>
-        <title>Recipe AI</title>
+        <title>Food Recipes AI</title>
         <meta
           name="description"
           content="A site powered by ChatGPT for generating cooking recipes"
@@ -93,7 +93,9 @@ export default function Home() {
         />
       </Head>
       <nav className="flex flex-col gap-6 col-start-2 col-end-8 p-3">
-        <h1 className="text-4xl font-extrabold cursor-pointer">🍽️ Recipe.AI</h1>
+        <h1 className="text-4xl font-extrabold cursor-pointer">
+          🍽️ FoodRecipes.AI
+        </h1>
         <hr />
       </nav>
       <main className="col-start-3 col-end-7">
@@ -173,14 +175,43 @@ export default function Home() {
       </main>
       <footer className="flex flex-col col-start-2 col-end-8">
         <hr />
-        <div className="p-6">
-          Powered by ChatGPT and Vercel Edge Functions. Inspired by{" "}
-          <Link
-            className="font-bold hover:text-blue-400"
-            href="https://www.twitterbio.com/"
-          >
-            twitterBio.com
-          </Link>
+        <div className="flex justify-between">
+          <div className="p-6">
+            Powered by{" "}
+            <Link
+              target="_blank"
+              className="font-bold hover:text-blue-400"
+              href="https://openai.com/blog/chatgpt"
+            >
+              ChatGPT
+            </Link>{" "}
+            and{" "}
+            <Link
+              target="_blank"
+              className="font-bold hover:text-blue-400"
+              href="https://www.vercel.com"
+            >
+              Vercel Edge Functions
+            </Link>
+            . Inspired by{" "}
+            <Link
+              target="_blank"
+              className="font-bold hover:text-blue-400"
+              href="https://www.twitterbio.com/"
+            >
+              twitterBio.com
+            </Link>
+          </div>
+          <div className="p-6">
+            Made with ❤️ by{" "}
+            <Link
+              target="_blank"
+              className="font-bold hover:text-blue-400"
+              href="https://www.carlosavina.dev/"
+            >
+              Carlos Aviña
+            </Link>
+          </div>
         </div>
       </footer>
     </div>
