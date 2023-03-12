@@ -11,6 +11,18 @@ export default function Home() {
   const [recipe, setRecipe] = React.useState<string>("");
   const [ingredients, setIngredients] = React.useState<Array<string>>([]);
   const [loading, setLoading] = React.useState(false);
+  const [copied, setCopied] = React.useState(false);
+  const copyButtonRef = React.useRef<HTMLButtonElement | null>(null);
+
+  React.useEffect(() => {
+    if (copied) {
+      const timeout = setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+
+      return () => clearInterval(timeout);
+    }
+  }, [copied]);
 
   async function generateRecipe(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -77,6 +89,11 @@ export default function Home() {
     setIngredients(ingredientsList);
   }
 
+  function copyToClipboard() {
+    navigator.clipboard.writeText(recipe);
+    setCopied(true);
+  }
+
   return (
     <div className="grid grid-cols-8 grid-rows-[min-content_1fr_min-content] gap-4 h-screen">
       <Head>
@@ -97,7 +114,7 @@ export default function Home() {
         </h1>
         <hr />
       </nav>
-      <main className="col-start-2 col-end-8 md:col-start-3 md:col-end-7">
+      <main className="flex flex-col col-start-2 col-end-8 md:col-start-3 md:col-end-7">
         <form
           className="flex flex-col gap-4"
           onSubmit={(e) => {
@@ -154,7 +171,7 @@ export default function Home() {
           </ul>
 
           <button
-            className="bg-black text-white rounded-md text-lg p-2 font-semibold"
+            className="bg-black text-white rounded-md text-lg p-2 font-semibold hover:bg-gray-900"
             type="submit"
           >
             {loading ? "Cooking..." : "Generate recipe"}
@@ -170,6 +187,16 @@ export default function Home() {
                 <p key={str}>{str}</p>
               ))}
           </div>
+        ) : null}
+        {recipe && !loading ? (
+          <button
+            ref={copyButtonRef}
+            className="bg-black font-semibold text-white rounded-full py-2 px-4 self-center hover:bg-gray-900"
+            type="button"
+            onClick={copyToClipboard}
+          >
+            {copied ? "Copied! 📋️" : "Copy to clipboard 📋️"}
+          </button>
         ) : null}
       </main>
       <footer className="flex flex-col col-start-2 col-end-8">
