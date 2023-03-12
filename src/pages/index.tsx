@@ -52,7 +52,7 @@ export default function Home() {
     );
 
     const ingredientsPrompt =
-      " with the folliwing ingredients: \n" + ingredientsText;
+      " with the following ingredients: \n" + ingredientsText;
     const prompt = `Give me a ${foodTypeSelect.value} ${
       cuisineSelect.value
     } cooking recipe${ingredientsText ? ingredientsPrompt : ""}`;
