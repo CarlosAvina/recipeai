@@ -19,7 +19,7 @@ export default function Home() {
   const [ingredients, setIngredients] = React.useState<Array<string>>([]);
   const [loading, setLoading] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
-  const copyButtonRef = React.useRef<HTMLButtonElement | null>(null);
+  const scrollCheckpointRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
     if (copied) {
@@ -88,6 +88,7 @@ export default function Home() {
     }
 
     setLoading(false);
+    scrollCheckpointRef.current?.scrollIntoView({ behavior: "smooth" });
   }
 
   function onIngredientsChange(e: SyntheticEvent<HTMLTextAreaElement>) {
@@ -198,7 +199,6 @@ export default function Home() {
         ) : null}
         {recipe && !loading ? (
           <button
-            ref={copyButtonRef}
             className="bg-black font-semibold text-white rounded-full py-2 px-4 self-center hover:bg-gray-900"
             type="button"
             onClick={copyToClipboard}
@@ -207,7 +207,10 @@ export default function Home() {
           </button>
         ) : null}
       </main>
-      <footer className="flex flex-col col-start-2 col-end-8">
+      <footer
+        ref={scrollCheckpointRef}
+        className="flex flex-col col-start-2 col-end-8"
+      >
         <hr />
         <div className="flex flex-col md:flex-row justify-between text-center md:text-left">
           <div className="p-6">
