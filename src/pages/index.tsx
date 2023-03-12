@@ -2,9 +2,16 @@ import React, { SyntheticEvent } from "react";
 import Head from "next/head";
 import Link from "next/link";
 
+function toTitleCase(text: string) {
+  if (!text) return "";
+  return text[0].toUpperCase() + text.slice(1);
+}
+
 function splitIngredients(ingredients: string) {
   if (!ingredients) return [];
-  return ingredients.trim().replace(" ", "").split(",");
+  return ingredients
+    .split(",")
+    .map((ingredient) => toTitleCase(ingredient.trim()));
 }
 
 export default function Home() {
@@ -161,6 +168,7 @@ export default function Home() {
               className="border-black border-2 rounded-md text-lg p-2"
               name="ingredients"
               placeholder="Comma separated e.g. (tomato, milk, flour)"
+              maxLength={200}
               onChange={onIngredientsChange}
             />
           </label>
