@@ -10,7 +10,7 @@ function Select({ label, children, name }: Props) {
       {label}
       <select
         name={name}
-        className="border-black border-2 rounded-md text-lg p-2"
+        className="border-black border-2 rounded-md text-lg p-2 text-black"
       >
         {children}
       </select>

@@ -145,7 +145,7 @@ export default function Home() {
           <label className="flex flex-col font-semibold">
             Write a list of ingredients for the recipe (optional)
             <textarea
-              className="border-black border-2 rounded-md text-lg p-2"
+              className="border-black border-2 rounded-md text-lg p-2 text-black"
               name="ingredients"
               placeholder="Comma separated e.g. (tomato, milk, flour)"
               maxLength={200}
@@ -160,7 +160,7 @@ export default function Home() {
           </ul>
 
           <button
-            className="bg-black text-white rounded-md text-lg p-2 font-semibold hover:bg-gray-900"
+            className="bg-black text-white rounded-md text-lg p-2 font-semibold hover:bg-gray-900 dark:bg-zinc-700"
             type="submit"
           >
             {loading ? "Cooking..." : "Generate recipe"}
@@ -168,7 +168,7 @@ export default function Home() {
         </form>
 
         {recipe ? (
-          <div className="font-semibold rounded-md border-1 border-black my-4 bg-slate-100 p-4">
+          <div className="font-semibold rounded-md border-1 border-black my-4 bg-slate-100 p-4 text-black">
             {recipe
               .split("\n")
               .filter(Boolean)
@@ -180,7 +180,7 @@ export default function Home() {
 
         {recipe && !loading ? (
           <button
-            className="bg-black font-semibold text-white rounded-full py-2 px-4 self-center hover:bg-gray-900"
+            className="bg-black font-semibold text-white rounded-full py-2 px-4 self-center hover:bg-gray-900 dark:bg-zinc-700"
             type="button"
             onClick={copyToClipboard}
           >
