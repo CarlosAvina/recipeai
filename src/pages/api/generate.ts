@@ -19,7 +19,7 @@ export default async function handler(req: Request) {
     model: "text-davinci-003",
     prompt,
     temperature: 0.4,
-    max_tokens: 500,
+    max_tokens: 600,
     stream: true,
     n: 1,
   };
