@@ -141,6 +141,7 @@ export default function Home() {
               name="cuisine"
               className="border-black border-2 rounded-md text-lg p-2"
             >
+              <option disabled selected value="random">None</option>
               <option value="mexican">Mexican</option>
               <option value="italian">Italian</option>
               <option value="japanese">Japanese</option>
@@ -151,7 +152,7 @@ export default function Home() {
           </label>
 
           <label className="flex flex-col font-semibold">
-            Select a food type
+            Select type of meal
             <select
               name="foodType"
               className="border-black border-2 rounded-md text-lg p-2"
