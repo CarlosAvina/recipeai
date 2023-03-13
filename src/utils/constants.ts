@@ -1,0 +1,1 @@
+export const CLIPBOARD_TIMEOUT = 2000;

@@ -1,18 +1,9 @@
 import React, { SyntheticEvent } from "react";
 import Head from "next/head";
-import Link from "next/link";
 
-function toTitleCase(text: string) {
-  if (!text) return "";
-  return text[0].toUpperCase() + text.slice(1);
-}
-
-function splitIngredients(ingredients: string) {
-  if (!ingredients) return [];
-  return ingredients
-    .split(",")
-    .map((ingredient) => toTitleCase(ingredient.trim()));
-}
+import { Link, Select } from "@/components";
+import { splitIngredients } from "@/utils/format";
+import { CLIPBOARD_TIMEOUT } from "@/utils/constants";
 
 export default function Home() {
   const [recipe, setRecipe] = React.useState<string>("");
@@ -25,7 +16,7 @@ export default function Home() {
     if (copied) {
       const timeout = setTimeout(() => {
         setCopied(false);
-      }, 2000);
+      }, CLIPBOARD_TIMEOUT);
 
       return () => clearInterval(timeout);
     }
@@ -33,14 +24,18 @@ export default function Home() {
 
   async function generateRecipe(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
+    setLoading(true);
+    setRecipe("");
 
-    const cuisineSelect = e.currentTarget.elements.namedItem(
+    const formElements = e.currentTarget.elements;
+
+    const cuisineSelect: HTMLSelectElement = formElements.namedItem(
       "cuisine"
     ) as HTMLSelectElement;
-    const foodTypeSelect = e.currentTarget.elements.namedItem(
-      "foodType"
+    const mealTypeSelect = formElements.namedItem(
+      "mealType"
     ) as HTMLSelectElement;
-    const ingredientsInput = e.currentTarget.elements.namedItem(
+    const ingredientsInput = formElements.namedItem(
       "ingredients"
     ) as HTMLTextAreaElement;
 
@@ -53,7 +48,7 @@ export default function Home() {
 
     const ingredientsPrompt =
       " with the following ingredients: \n" + ingredientsText;
-    const prompt = `Give me a ${foodTypeSelect.value} ${
+    const prompt = `Give me a ${mealTypeSelect.value} ${
       cuisineSelect.value
     } cooking recipe${ingredientsText ? ingredientsPrompt : ""}`;
 
@@ -123,46 +118,29 @@ export default function Home() {
         <hr />
       </nav>
       <main className="flex flex-col col-start-2 col-end-8 md:col-start-3 md:col-end-7">
-        <form
-          className="flex flex-col gap-4"
-          onSubmit={(e) => {
-            setLoading(true);
-            setRecipe("");
-            generateRecipe(e);
-          }}
-        >
+        <form className="flex flex-col gap-4" onSubmit={generateRecipe}>
           <h1 className="text-4xl font-extrabold text-center">
             Generate a cooking recipe with AI!
           </h1>
 
-          <label className="flex flex-col font-semibold">
-            Select a cuisine type
-            <select
-              name="cuisine"
-              className="border-black border-2 rounded-md text-lg p-2"
-            >
-              <option disabled selected value="random">None</option>
-              <option value="mexican">Mexican</option>
-              <option value="italian">Italian</option>
-              <option value="japanese">Japanese</option>
-              <option value="indian">Indian</option>
-              <option value="korean">Korean</option>
-              <option value="thai">Thai</option>
-            </select>
-          </label>
+          <Select name="cuisine" label="Select a cuisine type">
+            <option disabled selected value="random">
+              None
+            </option>
+            <option value="mexican">Mexican</option>
+            <option value="italian">Italian</option>
+            <option value="japanese">Japanese</option>
+            <option value="indian">Indian</option>
+            <option value="korean">Korean</option>
+            <option value="thai">Thai</option>
+          </Select>
 
-          <label className="flex flex-col font-semibold">
-            Select type of meal
-            <select
-              name="foodType"
-              className="border-black border-2 rounded-md text-lg p-2"
-            >
-              <option value="regular">Regular</option>
-              <option value="light">Light</option>
-              <option value="vegetarian">Vegetarian</option>
-              <option value="vegan">Vegan</option>
-            </select>
-          </label>
+          <Select name="mealType" label="Select type of meal">
+            <option value="regular">Regular</option>
+            <option value="light">Light</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="vegan">Vegan</option>
+          </Select>
 
           <label className="flex flex-col font-semibold">
             Write a list of ingredients for the recipe (optional)
@@ -174,6 +152,7 @@ export default function Home() {
               onChange={onIngredientsChange}
             />
           </label>
+
           <ul className="list-disc font-semibold">
             {ingredients.map((ingredient) => (
               <li key={ingredient}>{ingredient}</li>
@@ -198,6 +177,7 @@ export default function Home() {
               ))}
           </div>
         ) : null}
+
         {recipe && !loading ? (
           <button
             className="bg-black font-semibold text-white rounded-full py-2 px-4 self-center hover:bg-gray-900"
@@ -216,39 +196,14 @@ export default function Home() {
         <div className="flex flex-col md:flex-row justify-between text-center md:text-left">
           <div className="p-6">
             Powered by{" "}
-            <Link
-              target="_blank"
-              className="font-bold hover:text-blue-400"
-              href="https://openai.com/blog/chatgpt"
-            >
-              ChatGPT
-            </Link>{" "}
-            and{" "}
-            <Link
-              target="_blank"
-              className="font-bold hover:text-blue-400"
-              href="https://www.vercel.com"
-            >
-              Vercel Edge Functions
-            </Link>
-            . Inspired by{" "}
-            <Link
-              target="_blank"
-              className="font-bold hover:text-blue-400"
-              href="https://www.twitterbio.com/"
-            >
-              twitterBio.com
-            </Link>
+            <Link href="https://openai.com/blog/chatgpt">ChatGPT</Link> and{" "}
+            <Link href="https://www.vercel.com">Vercel Edge Functions</Link>.
+            Inspired by{" "}
+            <Link href="https://www.twitterbio.com/">twitterBio.com</Link>
           </div>
           <div className="p-6">
             Made with ❤️ by{" "}
-            <Link
-              target="_blank"
-              className="font-bold hover:text-blue-400"
-              href="https://www.carlosavina.dev/"
-            >
-              Carlos Aviña
-            </Link>
+            <Link href="https://www.carlosavina.dev/">Carlos Aviña</Link>
           </div>
         </div>
       </footer>
